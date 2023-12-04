@@ -12,7 +12,7 @@ COPY reactapp/ .
 RUN npm run build
 
 # FROM nginx:alpine
-nginxinc/nginx-unprivileged
+FROM nginxinc/nginx-unprivileged
 
 # support running as arbitrary user which belongs to the root group
 # RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx && \
