@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # Use default Nginx image
-FROM nginx
+FROM nginx:alpine
 # Copy the nginx.conf to the container
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx && \
