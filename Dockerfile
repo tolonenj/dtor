@@ -11,20 +11,21 @@ COPY reactapp/ .
 # Build the React app
 RUN npm run build
 
-FROM nginx:alpine
+# FROM nginx:alpine
+nginxinc/nginx-unprivileged
 
 # support running as arbitrary user which belongs to the root group
-RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx && \
-    chown nginx.root /var/cache/nginx /var/run /var/log/nginx && \
-    # users are not allowed to listen on privileged ports
-    sed -i.bak 's/listen\(.*\)80;/listen 8081;/' /etc/nginx/conf.d/default.conf && \
-    # Make /etc/nginx/html/ available to use
-    mkdir -p /etc/nginx/html/ && chmod 777 /etc/nginx/html/ && \
-    # comment user directive as master process is run as user in OpenShift anyhow
-    sed -i.bak 's/^user/#user/' /etc/nginx/nginx.conf
+# RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx && \
+#    chown nginx.root /var/cache/nginx /var/run /var/log/nginx && \
+#    # users are not allowed to listen on privileged ports
+#    sed -i.bak 's/listen\(.*\)80;/listen 8081;/' /etc/nginx/conf.d/default.conf && \
+#    # Make /etc/nginx/html/ available to use
+#    mkdir -p /etc/nginx/html/ && chmod 777 /etc/nginx/html/ && \
+#    # comment user directive as master process is run as user in OpenShift anyhow
+#    sed -i.bak 's/^user/#user/' /etc/nginx/nginx.conf
 
-COPY --from=build /app/build /usr/share/nginx/html/
+COPY --from=build /app/build /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html/
-EXPOSE 8081
+EXPOSE 8080
 
-USER nginx:root
+#USER nginx:root
