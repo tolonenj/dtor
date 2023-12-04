@@ -11,24 +11,23 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-# Use default Nginx image
 FROM nginx:alpine
-# Copy the nginx.conf to the container
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# support running as arbitrary user which belongs to the root group
 RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx && \
     chown nginx.root /var/cache/nginx /var/run /var/log/nginx && \
+    # users are not allowed to listen on privileged ports
+    sed -i.bak 's/listen\(.*\)80;/listen 8081;/' /etc/nginx/conf.d/default.conf && \
+    # Make some modifications to index file
+    sed -i.bak 's/web server/Joona dealer/' /usr/share/nginx/html/index.html && \
+    sed -i.bak 's/nginx/nGInX/' /usr/share/nginx/html/index.html && \
     # Make /etc/nginx/html/ available to use
     mkdir -p /etc/nginx/html/ && chmod 777 /etc/nginx/html/ && \
     # comment user directive as master process is run as user in OpenShift anyhow
     sed -i.bak 's/^user/#user/' /etc/nginx/nginx.conf
 
-# Copy the React app build files to the container
 COPY --from=build /app/build /usr/share/nginx/html/
-# Expose port 8081 for Nginx
 WORKDIR /usr/share/nginx/html/
 EXPOSE 8081
 
 USER nginx:root
-
-# Start Nginx when the container starts
-#CMD ["nginx", "-g", "daemon off;"]
