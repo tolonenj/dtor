@@ -3,11 +3,11 @@ FROM node:19-alpine as build
 # Set the working directory to /app
 WORKDIR /app
 # Copy the package.json and package-lock.json to the container
-COPY markku/package*.json ./
+COPY reactapp/package*.json ./
 # Install dependencies
 RUN npm ci
 # Copy the rest of the application code to the container
-COPY markku/ .
+COPY reactapp/ .
 # Build the React app
 RUN npm run build
 
