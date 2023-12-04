@@ -7,7 +7,7 @@ COPY markku/package*.json ./
 # Install dependencies
 RUN npm ci
 # Copy the rest of the application code to the container
-COPY . .
+COPY markku/ .
 # Build the React app
 RUN npm run build
 
